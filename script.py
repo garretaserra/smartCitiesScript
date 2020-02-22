@@ -2,25 +2,19 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 
-data = pd.read_csv("C:/Users/sgale/PycharmProjects/test/datasets/UJIIndoorLoc/UJIIndoorLoc_B0-ID-01.csv")
+# Read the data from the CSV file
+data = pd.read_csv("datasets/UJIIndoorLoc/UJIIndoorLoc_B0-ID-01.csv")
+# Print general information of the data
 print('Data information: ', data.info())
 print('Data description\n', data.describe())
-
-last_column = data['ID']
-uniqueIDs = last_column.unique()
-print('Amount of unique IDs', len(uniqueIDs))
-
-
 print('Size of data: ', data.shape)
 
-# correlation = data.corr()
+# Calculate how many unique IDs there are corresponding to unique locations
+uniqueIDs = data['ID'].unique()
+print('Amount of unique IDs', len(uniqueIDs))
 
-# print('Correlation: \n', correlation['ID'])
-
-
-# Count percentage of participation on WAPs
-noise = []
-print('Values:\n')
+# Count percentage of participation on WAPs on all entries
+noise = []  # List of column names that are always 0
 for column in data:
     column = data[column]
     zeroes = 0
@@ -30,37 +24,41 @@ for column in data:
             zeroes += 1
         else:
             ones += 1
-    ones_percent = ones / (zeroes + ones)
-    zeroes_percent = zeroes / (zeroes + ones)
     # If the WAP is never connected add to noise list
     if ones == 0:
         noise.append(column.name)
-    # print(column.name, '\t\t', 'Ones: ', ones, '\t', 'Zeroes: ', zeroes)
 
-# Count how many WAPs are noise
+# Print how many WAPs are noise and show which ones
 print('Noise Count:', noise.__len__())
 print('Noise list:', noise)
 
-
-# Get a copy of the dataFrame only with useful information
-usefulData = data
-print('Size before removing noise:', usefulData.shape)
+# Remove WAPs that are never connected
+print('Size before removing noise:', data.shape)
 for uselessColumn in noise:
-    usefulData.drop(uselessColumn, axis=1, inplace=True)
-print('Size after removing noise: ', usefulData.shape)
+    data.drop(uselessColumn, axis=1, inplace=True)
+print('Size after removing noise: ', data.shape)
 
-usefulIdCount = []
-allIdCount = []
-
-infoId = np.zeros((len(uniqueIDs), 3))
-
+# Get count of unique ID
+allIdCount = np.zeros(len(uniqueIDs))
 for i in range(len(uniqueIDs)):
-    result = usefulData.apply(lambda x: True if x['ID'] == uniqueIDs[i] else False, axis=1)
-    count = len(result[result == True].index)
-    usefulIdCount.append(count)
-    infoId[i][0] = uniqueIDs[i]
-    infoId[i][1] = count
-    # uniqueIDs[i] = [uniqueIDs[i], count]
-    break
-print('Unique ID counts: \n', uniqueIDs)
+    allIdCount[i] = len((data.loc[data['ID'] == uniqueIDs[i]]).index)
+
+# Create Data Frame with information on quantity of entries for each unique ID
+locationDF = pd.DataFrame({'ID': uniqueIDs, 'Count': allIdCount}, columns=['ID', 'Count'])
+print('Description of distribution of unique ID number of entries:\n', locationDF.describe())
+
+results = pd.DataFrame()
+# Calculate percentage of entries that each WAP is connected when on a given ID
+for location in uniqueIDs:
+    connectivity = []
+    for column_name, column_data in data.iloc[:, :-1].iteritems():
+        result = ((column_data == 1) & (data['ID'] == location)).sum()
+        connectivity.append(result)
+    results[location] = connectivity
+
+print(results.describe())
+
+
+
+
 plt.show()
