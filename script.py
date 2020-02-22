@@ -15,18 +15,17 @@ print('Amount of unique IDs', len(uniqueIDs))
 
 # Count percentage of participation on WAPs on all entries
 noise = []  # List of column names that are always 0
-for column in data:
-    column = data[column]
+for column_name, column_data in data.iloc[:, :-1].iteritems():
     zeroes = 0
     ones = 0
-    for value in column:
+    for value in column_data:
         if value == 0:
             zeroes += 1
         else:
             ones += 1
     # If the WAP is never connected add to noise list
     if ones == 0:
-        noise.append(column.name)
+        noise.append(column_name)
 
 # Print how many WAPs are noise and show which ones
 print('Noise Count:', noise.__len__())
@@ -52,13 +51,13 @@ results = pd.DataFrame()
 for location in uniqueIDs:
     connectivity = []
     for column_name, column_data in data.iloc[:, :-1].iteritems():
-        result = ((column_data == 1) & (data['ID'] == location)).sum()
+        result = (np.corrcoef((column_data == 1), (data['ID'] == location)))[0, 1]
         connectivity.append(result)
     results[location] = connectivity
 
+# Rename rows with according WAP names
+for index, column in enumerate(data.columns[0:-1]):
+    results.rename(index={index: column}, inplace=True)
+
 print(results.describe())
-
-
-
-
 plt.show()
