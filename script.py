@@ -73,4 +73,13 @@ print('\n\n\nThe best WAPs at predicting the locations are')
 for row in results.sum(axis=1).nlargest(5, keep='first').iteritems():
     print('The ', row[0], 'with a value of ', row[1])
 
+# Check for WAPs with exactly same data
+for column in data.columns:
+    j = data.columns.get_loc(column) + 1
+    while j < len(data.columns):
+        correlation = np.corrcoef(data[column], data.iloc[:, j])
+        if correlation[0, 1] == 1:
+            print('\n\n', column, ' and ', data.iloc[:, j].name, ' are the same')
+        j += 1
+
 plt.show()
