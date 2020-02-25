@@ -44,7 +44,7 @@ for i in range(len(uniqueIDs)):
 
 # Create Data Frame with information on quantity of entries for each unique ID
 locationDF = pd.DataFrame({'ID': uniqueIDs, 'Count': allIdCount}, columns=['ID', 'Count'])
-print('Description of distribution of unique ID number of entries:\n', locationDF.describe())
+print('Description of distribution of unique ID number of entries:\n', locationDF['Count'].describe())
 
 results = pd.DataFrame()
 # Calculate the correlation for each WAP
