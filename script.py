@@ -47,7 +47,7 @@ locationDF = pd.DataFrame({'ID': uniqueIDs, 'Count': allIdCount}, columns=['ID',
 print('Description of distribution of unique ID number of entries:\n', locationDF['Count'].describe())
 
 results = pd.DataFrame()
-# Calculate the correlation for each WAP
+# Calculate the correlation for each WAP with each ID
 for location in uniqueIDs:
     connectivity = []
     for column_name, column_data in data.iloc[:, :-1].iteritems():
