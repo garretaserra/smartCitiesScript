@@ -37,7 +37,7 @@ for uselessColumn in noise:
     data.drop(uselessColumn, axis=1, inplace=True)
 print('Size after removing noise: ', data.shape)
 
-# Get count of unique ID
+# Get quantity of entries with the same ID
 allIdCount = np.zeros(len(uniqueIDs))
 for i in range(len(uniqueIDs)):
     allIdCount[i] = len((data.loc[data['ID'] == uniqueIDs[i]]).index)
