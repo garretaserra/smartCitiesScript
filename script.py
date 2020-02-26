@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+import seaborn as sns
 
 # Read the data from the CSV file
 data = pd.read_csv("datasets/UJIIndoorLoc/UJIIndoorLoc_B0-ID-01.csv")
@@ -46,6 +47,8 @@ for i in range(len(uniqueIDs)):
 locationDF = pd.DataFrame({'ID': uniqueIDs, 'Count': allIdCount}, columns=['ID', 'Count'])
 print('Description of distribution of unique ID number of entries:\n', locationDF['Count'].describe())
 
+locationDF.hist(bins=10)
+
 results = pd.DataFrame()
 # Calculate the correlation for each WAP with each ID
 for location in uniqueIDs:
@@ -57,6 +60,9 @@ for location in uniqueIDs:
 # Rename rows with according WAP names
 for index, column in enumerate(data.columns[0:-1]):
     results.rename(index={index: column}, inplace=True)
+
+
+
 
 # Order results data frame columns
 results = results.reindex(sorted(results.columns), axis=1)
