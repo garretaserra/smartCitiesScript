@@ -32,6 +32,3 @@ X_new = [[3.5, 1.2, 4.5, 2.3]]
 y_pred = knn.predict(X_new)
 print("New sample: {}".format(X_new))
 print("New sample prediction: {} {}".format(y_pred, iris.target_names[y_pred]))
-
-
-
