@@ -4,7 +4,7 @@ import numpy as np
 import seaborn as sns
 
 # Read the data from the CSV file
-data = pd.read_csv("datasets/UJIIndoorLoc/UJIIndoorLoc_B0-ID-01.csv")
+data = pd.read_csv("../datasets/UJIIndoorLoc/UJIIndoorLoc_B0-ID-01.csv")
 # Print general information of the data
 print('Data information: ', data.info())
 print('Data description\n', data.describe())
