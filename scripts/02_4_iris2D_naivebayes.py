@@ -43,7 +43,7 @@ train_len = X_train.shape[0]
 combined_len = X_combined.shape[0]
 
 plt.figure(figsize=(3, 3), dpi=300)
-plot_decision_regions(X=X_combined, y=y_combined, classifier=knn_model, test_idx=range(train_len, combined_len))
+plot_decision_regions(X=X_combined, y=y_combined, classifier=gnb_model, test_idx=range(train_len, combined_len))
 plt.xlabel('petal length [cm]')
 plt.ylabel('petal width [cm]')
 plt.legend(loc='upper left')
