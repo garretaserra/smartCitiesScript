@@ -12,6 +12,9 @@ import matplotlib.pyplot as plt
 # Read the data from the CSV file
 data = pd.read_csv("../datasets/UJIIndoorLoc/UJIIndoorLoc_B0-ID-01.csv")
 
+# Remove noise
+data = data.loc[:, (data != 0).any(axis=0)]
+
 # Print general information of the data
 print('Data information: ', data.info())
 print('Data description\n', data.describe())
@@ -24,11 +27,11 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_
 
 print('Starting Decision Tree Classifier')
 t1 = time.time()
-tree_model = DecisionTreeClassifier(criterion='entropy', max_depth=50, random_state=1)
+tree_model = DecisionTreeClassifier(criterion='entropy', max_depth=1000, random_state=1)
 tree_model.fit(X_train, y_train)
 t2 = time.time()
 t12 = round(t2-t1, 5)
-print('Time used for training with a max depth of', tree_model.max_depth, 'and size of', len(X_train), 'is', t12)
+print('Time used for training with a depth of', tree_model.get_depth(), 'and size of', len(X_train), 'is', t12)
 
 # test prediction
 print('Start prediction time')
@@ -45,8 +48,6 @@ X_combined = np.vstack((X_train, X_test))
 y_combined = np.hstack((y_train, y_test))
 train_len = X_train.shape[0]
 combined_len = X_combined.shape[0]
-
-# The decision plot can not be represented because it would have 520 dimensions
 
 # Uncomment next line to print decision tree
 # print(export_text(tree_model, feature_names=list(X.columns)))
