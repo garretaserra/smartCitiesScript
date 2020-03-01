@@ -24,6 +24,6 @@ def k_nearest_neighbors(x_train, x_test, y_train, y_test, neighbors):
     prediction_time = round(t4 - t3, 3)
 
     # Accuracy
-    accuracy = knn_model.score(x_test, y_test)
+    accuracy = 100.0 * knn_model.score(x_test, y_test)
 
     return accuracy, train_time, prediction_time
