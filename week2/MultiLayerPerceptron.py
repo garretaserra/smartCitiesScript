@@ -6,14 +6,14 @@ from sklearn.neural_network import MLPClassifier
 import time
 
 
-def naive_bayes(x_train, x_test, y_train, y_test):
+def multi_layer_perceptron(x_train, x_test, y_train, y_test):
     # Train model
     t1 = time.time()
     neural_network_model = MLPClassifier(max_iter=1000)
     neural_network_model.fit(x_train, y_train)
     t2 = time.time()
     training_time = round(t2-t1, 5)
-    
+
     # test prediction
     t1 = time.time()
     neural_network_model.predict(x_test)
