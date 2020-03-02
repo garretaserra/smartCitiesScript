@@ -94,7 +94,6 @@ auto_label(rects1)
 auto_label(rects2)
 
 plt.title("Times of operation (s)")
-plt.show()
 
 # Decision Tree max depth
 accuracy = []
@@ -109,8 +108,25 @@ for i in range(1, 23):     # Max depth for this case
 
 plt.figure(figsize=(10, 6), dpi=500)
 plt.plot(range(1, 23), accuracy, linewidth=3)
-plt.title("Decision Tree Classifier Accuracy")
+plt.title("Decision Tree Classifier Accuracy (%)")
+plt.xlabel("Max Depth")
 axes = plt.gca()
-# Set y axis to go from 0 to 100
-axes.set_ylim([0, 100])
+axes.set_ylim([0, 100])     # Set y axis to go from 0 to 100
+
+# KNNeighbors
+accuracy = []
+train_times = []
+prediction_times = []
+
+for i in range(1, 22):     # Max depth for this case
+    result = k_nearest_neighbors(X_train, X_test, y_train, y_test, i)
+    accuracy.append(result[0])
+    train_times.append(result[1])
+    prediction_times.append(result[2])
+plt.figure(figsize=(10, 6), dpi=500)
+plt.plot(range(1, 22), accuracy, linewidth=3)
+plt.title("K-Nearest Neighbor Classifier Accuracy (%)")
+plt.xlabel("K")
+axes = plt.gca()
+axes.set_ylim([0, 100])     # Set y axis to go from 0 to 100
 plt.show()
