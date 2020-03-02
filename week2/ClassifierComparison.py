@@ -101,8 +101,16 @@ accuracy = []
 train_times = []
 prediction_times = []
 
-for i in range(22):     # Max depth for this case
-    result = decision_tree_classifier(X_train, X_test, y_train, y_test, 50)
+for i in range(1, 23):     # Max depth for this case
+    result = decision_tree_classifier(X_train, X_test, y_train, y_test, i)
     accuracy.append(result[0])
     train_times.append(result[1])
     prediction_times.append(result[2])
+
+plt.figure(figsize=(10, 6), dpi=500)
+plt.plot(range(1, 23), accuracy, linewidth=3)
+plt.title("Decision Tree Classifier Accuracy")
+axes = plt.gca()
+# Set y axis to go from 0 to 100
+axes.set_ylim([0, 100])
+plt.show()
