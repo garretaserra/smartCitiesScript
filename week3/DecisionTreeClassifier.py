@@ -5,7 +5,7 @@
 import time
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import cross_val_score
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix, classification_report
 
 
 def decision_tree_classifier(x_train, x_test, y_train, y_test, max_depth, X, y):
@@ -28,5 +28,9 @@ def decision_tree_classifier(x_train, x_test, y_train, y_test, max_depth, X, y):
     # Confusion Matrix
     confusion = confusion_matrix(y_test, y_pred)
     print('Decision Tree\n', confusion[0:10, 0:10])
+
+    # Classification Report
+    classification = classification_report(y_test, y_pred)
+    print(classification)
 
     return accuracy, training_time, prediction_time, tree_model.get_depth(), cv_scores

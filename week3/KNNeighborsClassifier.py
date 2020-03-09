@@ -3,7 +3,7 @@
 # KNNeighbors
 
 import time
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix, classification_report
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import cross_val_score
 
@@ -34,5 +34,9 @@ def k_nearest_neighbors(x_train, x_test, y_train, y_test, neighbors, X, y):
     # Confusion Matrix
     confusion = confusion_matrix(y_test, y_pred)
     print('KNNeighbors\n', confusion[0:10, 0:10])
+
+    # Classification Report
+    classification = classification_report(y_test, y_pred)
+    print(classification)
 
     return accuracy, train_time, prediction_time, cv_scores
