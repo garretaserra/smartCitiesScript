@@ -1,7 +1,7 @@
 # Deliverable S2
 # Classifiers
 # Support Vector Machine
-from sklearn.metrics import confusion_matrix, classification_report
+from sklearn.metrics import confusion_matrix, classification_report, roc_auc_score
 from sklearn.svm import SVC
 import time
 from sklearn.model_selection import cross_val_score
@@ -10,7 +10,7 @@ from sklearn.model_selection import cross_val_score
 def support_vector_machine(x_train, x_test, y_train, y_test, X, y):
     # Train model
     t1 = time.time()
-    svm_model = SVC(kernel='linear')
+    svm_model = SVC(kernel='linear', probability=True)
     svm_model.fit(x_train, y_train)
     t2 = time.time()
     train_time = round(t2-t1, 3)
@@ -32,4 +32,9 @@ def support_vector_machine(x_train, x_test, y_train, y_test, X, y):
     classification = classification_report(y_test, y_pred)
     print(classification)
 
-    return accuracy, train_time, prediction_time, cv_scores
+    # ROC Curve
+    y_pred_prob = svm_model.predict_proba(x_test)
+    roc_curve = roc_auc_score(y_test, y_pred_prob, multi_class='ovr')
+    print('ROC: ', roc_curve)
+
+    return accuracy, train_time, prediction_time, cv_scores, roc_curve

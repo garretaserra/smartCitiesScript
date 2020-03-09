@@ -10,6 +10,7 @@ import numpy as np
 
 # Read the data from the CSV file
 data = pd.read_csv("../datasets/UJIIndoorLoc/UJIIndoorLoc_B0-ID-01.csv")
+# data = pd.read_csv("../datasets/UJIIndoorLoc/UJIIndoorLoc_B0-ID.csv", na_values="100")
 data = data.sample(frac=1)
 
 # Remove noise
@@ -25,6 +26,7 @@ accuracy = []
 train_times = []
 prediction_times = []
 cv_scores = [[], [], [], [], []]
+roc = []
 
 result = naive_bayes(X_train, X_test, y_train, y_test, X, y)
 print(result)
@@ -36,6 +38,7 @@ i = 0
 for res in result[3]:
     cv_scores[i].append(res)
     i += 1
+roc.append(result[4])
 
 result = decision_tree_classifier(X_train, X_test, y_train, y_test, 50, X, y)
 print(result)
@@ -47,6 +50,7 @@ i = 0
 for res in result[4]:
     cv_scores[i].append(res)
     i += 1
+roc.append(result[5])
 
 result = multi_layer_perceptron(X_train, X_test, y_train, y_test, X, y)
 print(result)
@@ -58,6 +62,7 @@ i = 0
 for res in result[3]:
     cv_scores[i].append(res)
     i += 1
+roc.append(result[4])
 
 result = support_vector_machine(X_train, X_test, y_train, y_test, X, y)
 print(result)
@@ -69,6 +74,7 @@ i = 0
 for res in result[3]:
     cv_scores[i].append(res)
     i += 1
+roc.append(result[4])
 
 result = k_nearest_neighbors(X_train, X_test, y_train, y_test, 5, X, y)
 print(result)
@@ -80,6 +86,7 @@ i = 0
 for res in result[3]:
     cv_scores[i].append(res)
     i += 1
+roc.append(result[4])
 
 # Accuracy chart
 plt.figure(figsize=(10, 6), dpi=500)
@@ -101,6 +108,12 @@ ax.bar(x+0.16, cv_scores[3], width=0.15, color='b')
 ax.bar(x+0.32, cv_scores[4], width=0.15, color='b')
 ax.set_xticks(x)
 ax.set_xticklabels(classifiers)
+plt.show()
+
+# Roc Chart
+plt.figure(figsize=(10, 6), dpi=500)
+plt.bar(classifiers, roc)
+plt.title("ROC")
 plt.show()
 
 #

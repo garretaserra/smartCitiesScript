@@ -3,7 +3,7 @@
 # NaiveBayes
 
 import time
-from sklearn.metrics import confusion_matrix, classification_report
+from sklearn.metrics import confusion_matrix, classification_report, roc_auc_score
 from sklearn.naive_bayes import GaussianNB
 from sklearn.model_selection import cross_val_score
 
@@ -37,4 +37,9 @@ def naive_bayes(x_train, x_test, y_train, y_test, X, y):
     classification = classification_report(y_test, y_pred)
     print(classification)
 
-    return accuracy, train_time, prediction_time, cv_scores
+    # ROC Curve
+    y_pred_prob = gnb_model.predict_proba(x_test)
+    roc_curve = roc_auc_score(y_test, y_pred_prob, multi_class='ovr')
+    print('ROC: ',roc_curve)
+
+    return accuracy, train_time, prediction_time, cv_scores, roc_curve
