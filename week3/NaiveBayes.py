@@ -3,6 +3,7 @@
 # NaiveBayes
 
 import time
+from sklearn.metrics import confusion_matrix
 from sklearn.naive_bayes import GaussianNB
 from sklearn.model_selection import cross_val_score
 
@@ -27,5 +28,9 @@ def naive_bayes(x_train, x_test, y_train, y_test, X, y):
     # print('Misclassified samples: %d' % (y_test != y_pred).sum())
     # print('Accuracy: %.2f%%' % (100.0 * gnb_model.score(x_test, y_test)))
     accuracy = 100.0 * gnb_model.score(x_test, y_test)
+
+    # Confusion Matrix
+    confusion = confusion_matrix(y_test, y_pred)
+    print('Naive Bayes\n', confusion[0:10, 0:10])
 
     return accuracy, train_time, prediction_time, cv_scores

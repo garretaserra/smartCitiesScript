@@ -1,7 +1,7 @@
 # Deliverable S2
 # Classifiers
 # Support Vector Machine
-
+from sklearn.metrics import confusion_matrix
 from sklearn.svm import SVC
 import time
 from sklearn.model_selection import cross_val_score
@@ -19,8 +19,13 @@ def support_vector_machine(x_train, x_test, y_train, y_test, X, y):
 
     # test prediction
     t1 = time.time()
-    svm_model.predict(x_test)
+    y_pred = svm_model.predict(x_test)
     t2 = time.time()
     prediction_time = round(t2-t1, 3)
     accuracy = 100.0 * svm_model.score(x_test, y_test)
+
+    # Confusion Matrix
+    confusion = confusion_matrix(y_test, y_pred)
+    print('Support Vector Machine\n', confusion[0:10, 0:10])
+
     return accuracy, train_time, prediction_time, cv_scores
