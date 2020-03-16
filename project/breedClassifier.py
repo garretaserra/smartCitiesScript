@@ -4,8 +4,8 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Conv2D, Flatten, Dropout, MaxPooling2D
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
+from datetime import datetime
 import os
-import numpy as np
 import matplotlib.pyplot as plt
 from math import ceil
 
@@ -103,4 +103,10 @@ plt.plot(epochs_range, loss, label='Training Loss')
 plt.plot(epochs_range, val_loss, label='Validation Loss')
 plt.legend(loc='upper right')
 plt.title('Training and Validation Loss')
+
+# Save figure
+time = datetime.now()
+plt.savefig("./result/%s_%s_%s" % (time.hour, time.minute, time.second) )
+
+# Show figure
 plt.show()
