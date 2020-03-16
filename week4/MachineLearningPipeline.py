@@ -16,13 +16,13 @@ print('Unique Classes: ', data['ID'].unique())
 # Randomize input samples
 data = data.sample(frac=1)
 
-no_connection_val = -120
-
 # Remove noise
-data.replace(100, no_connection_val, inplace=True)
 print('Size before removing noise:', data.shape)
-data = data.loc[:, (data != no_connection_val).any(axis=0)]
+data = data.loc[:, (data != 100).any(axis=0)]
 print('Size after removing noise: ', data.shape)
+
+no_connection_val = -120    # Value that will be set when not connected
+data.replace(100, no_connection_val, inplace=True)
 
 # Differentiate columns
 X = data.drop('ID', axis=1)
@@ -37,7 +37,7 @@ X = pd.DataFrame(x_scaled)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1, stratify=y)
 
 # Train data
-neural_network_model = MLPClassifier(max_iter=1000, hidden_layer_sizes=(465, 400, 300, 256))
+neural_network_model = MLPClassifier(max_iter=1000, hidden_layer_sizes=(465, 400, 350, 300, 256))
 start = time()
 neural_network_model.fit(X_train, y_train)
 end = time()
