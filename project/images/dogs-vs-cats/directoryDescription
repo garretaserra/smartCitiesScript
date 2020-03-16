@@ -1,0 +1,7 @@
+In this directory the structure is:
+|images
+    |dogs
+    |cats
+
+Inside of the dogs and cats folder are the corresponding images of them from:
+https://www.kaggle.com/c/3362/download-all
