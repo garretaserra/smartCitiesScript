@@ -5,28 +5,41 @@ import pandas as pd
 from sklearn.neural_network import MLPClassifier
 from sklearn import preprocessing
 from time import time
+from imblearn.over_sampling import RandomOverSampler
 
 
 # Read the data from the CSV file
 data = pd.read_csv("../datasets/UJIIndoorLoc/UJIIndoorLoc_ID.csv")
 
-print('Unique Classes: ', data['ID'].unique())
+print('Unique Classes: ', len(data['ID'].unique()))
 
 # Pre-Processing
 # Randomize input samples
 data = data.sample(frac=1)
 
-no_connection_val = -120
-
 # Remove noise
-data.replace(100, no_connection_val, inplace=True)
 print('Size before removing noise:', data.shape)
-data = data.loc[:, (data != no_connection_val).any(axis=0)]
+data = data.loc[:, (data != 100).any(axis=0)]
 print('Size after removing noise: ', data.shape)
+
+# Find duplicates
+data = data.drop_duplicates()
+print('Size after removing duplicates: ', data.shape)
 
 # Differentiate columns
 X = data.drop('ID', axis=1)
 y = data['ID'].astype('category')
+
+# Oversampling (make sure to have at least 2 instances of each class)
+ros = RandomOverSampler(random_state=10, sampling_strategy='minority')
+while y.value_counts().le(2).any():
+    X, y = ros.fit_resample(X, y)
+
+print('Size after oversampling: ', X.shape)
+
+# Replace 100 by -120
+no_connection_val = -120    # Value that will be set when not connected
+X.replace(100, no_connection_val, inplace=True)
 
 # Normalise data
 x_scaled = preprocessing.MinMaxScaler().fit_transform(X.values)
@@ -37,11 +50,11 @@ X = pd.DataFrame(x_scaled)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1, stratify=y)
 
 # Train data
-neural_network_model = MLPClassifier(max_iter=1000, hidden_layer_sizes=(465, 400, 300, 256))
+neural_network_model = MLPClassifier(max_iter=1000, hidden_layer_sizes=(465, 735))
 start = time()
 neural_network_model.fit(X_train, y_train)
 end = time()
-print('Time taken: ', round(end-start, 3))
+print('Time taken: ', round(end-start, 3)/6)
 
 # Test data
 y_pred = neural_network_model.predict(X_test)
