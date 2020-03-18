@@ -31,8 +31,8 @@ X = data.drop('ID', axis=1)
 y = data['ID'].astype('category')
 
 # Oversampling (make sure to have at least 2 instances of each class)
-ros = RandomOverSampler(random_state=10, sampling_strategy='minority')
-while y.value_counts().le(2).any():
+ros = RandomOverSampler(random_state=20, sampling_strategy='minority')
+while y.value_counts().le(10).any():
     X, y = ros.fit_resample(X, y)
 
 print('Size after oversampling: ', X.shape)
@@ -54,7 +54,7 @@ neural_network_model = MLPClassifier(max_iter=1000, hidden_layer_sizes=(465, 735
 start = time()
 neural_network_model.fit(X_train, y_train)
 end = time()
-print('Time taken: ', round(end-start, 3)/6)
+print('Time taken: ', round(end-start, 3)/60)
 
 # Test data
 y_pred = neural_network_model.predict(X_test)
