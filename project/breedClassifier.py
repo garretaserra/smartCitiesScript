@@ -83,8 +83,12 @@ model.compile(optimizer='adam',
 
 # TODO: Make a function to predict images once the model is trained
 
+# Create directory if it doesn't exist
+if not os.path.isdir('./model'):
+    os.mkdir('model')
 # Load model from file
-model = load_model('./model/model.h5')
+if os.path.isfile('./model/model.h5'):
+    model = load_model('./model/model.h5')
 
 model.summary()
 t1 = time()
@@ -99,7 +103,7 @@ t2 = time()
 print('Finished network.\nTime taken: ', ((t2 - t1) / 60).__round__(0), ' minutes')
 
 # Save model to file
-# model.save('./model/model.h5')
+model.save('./model/model.h5')
 
 acc = history.history['accuracy']
 val_acc = history.history['val_accuracy']
