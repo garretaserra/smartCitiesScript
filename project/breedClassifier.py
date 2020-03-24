@@ -33,7 +33,7 @@ print('total validation trufis images:', num_trufis)
 print('total validation images:', total_validation)
 
 batch_size = 50
-epochs = 1  # Iterations
+epochs = 50  # Iterations
 IMG_HEIGHT = 500
 IMG_WIDTH = 500
 
@@ -94,10 +94,10 @@ model.summary()
 t1 = time()
 history = model.fit(
     train_data_gen,
-    steps_per_epoch=ceil(total_train / batch_size),
+    steps_per_epoch=ceil(batch_size / total_train),
     epochs=epochs,
     validation_data=val_data_gen,
-    validation_steps=ceil(total_validation / batch_size)
+    validation_steps=ceil(batch_size/total_validation)
 )
 t2 = time()
 print('Finished network.\nTime taken: ', ((t2 - t1) / 60).__round__(0), ' minutes')
