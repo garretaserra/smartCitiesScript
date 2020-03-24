@@ -7,6 +7,8 @@ from datetime import datetime
 import os
 import matplotlib.pyplot as plt
 from math import ceil
+from time import time
+from tensorflow_core.python.keras.saving.save import load_model
 
 images_dir = './images/dogs'
 
@@ -30,10 +32,10 @@ print('total validation jakes images:', num_jakes)
 print('total validation trufis images:', num_trufis)
 print('total validation images:', total_validation)
 
-batch_size = 500
-epochs = 50  # Iterations
-IMG_HEIGHT = 300
-IMG_WIDTH = 300
+batch_size = 50
+epochs = 1  # Iterations
+IMG_HEIGHT = 500
+IMG_WIDTH = 500
 
 train_image_generator = ImageDataGenerator(
     rescale=1. / 255,
@@ -42,7 +44,6 @@ train_image_generator = ImageDataGenerator(
     height_shift_range=.15,
     horizontal_flip=True,
     zoom_range=0.2,
-    # validation_split=holdout
 )
 validate_image_generator = ImageDataGenerator(rescale=1. / 255)
 
@@ -80,20 +81,25 @@ model.compile(optimizer='adam',
               loss=tf.keras.losses.BinaryCrossentropy(from_logits=True),
               metrics=['accuracy'])
 
-# TODO: Save the model so that it doesn't start training from 0 every time
-
 # TODO: Make a function to predict images once the model is trained
 
+# Load model from file
+model = load_model('./model/model.h5')
+
 model.summary()
-history = model.fit_generator(
+t1 = time()
+history = model.fit(
     train_data_gen,
     steps_per_epoch=ceil(total_train / batch_size),
     epochs=epochs,
     validation_data=val_data_gen,
     validation_steps=ceil(total_validation / batch_size)
 )
+t2 = time()
+print('Finished network.\nTime taken: ', ((t2 - t1) / 60).__round__(0), ' minutes')
 
-print('Finished network')
+# Save model to file
+# model.save('./model/model.h5')
 
 acc = history.history['accuracy']
 val_acc = history.history['val_accuracy']
@@ -118,7 +124,13 @@ plt.title('Training and Validation Loss')
 
 # Save figure
 time = datetime.now()
-plt.savefig("./result/%s_%s_%s" % (time.hour, time.minute, time.second) )
+plt.savefig("./result/%s_%s_%s" % (time.hour, time.minute, time.second))
 
 # Show figure
 plt.show()
+
+
+def predict(image):
+    # Load model
+    model = load_model('./model/model.h5')
+    return model.predict(image)
