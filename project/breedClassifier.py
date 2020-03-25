@@ -34,14 +34,14 @@ print('total validation jakes images:', num_jakes)
 print('total validation trufis images:', num_trufis)
 print('total validation images:', total_validation)
 
-batch_size = 10
-epochs = 150  # Iterations
-IMG_HEIGHT = 250
-IMG_WIDTH = 250
+batch_size = 20
+epochs = 200  # Iterations
+IMG_HEIGHT = 300
+IMG_WIDTH = 300
 
 train_image_generator = ImageDataGenerator(
     rescale=1. / 255,
-    rotation_range=45,
+    rotation_range=20,
     width_shift_range=.25,
     height_shift_range=.25,
     horizontal_flip=True,
@@ -54,7 +54,7 @@ train_data_gen = train_image_generator.flow_from_directory(batch_size=batch_size
                                                            classes=['beagles', 'yorkshires'],
                                                            class_mode='binary',
                                                            shuffle=True,
-                                                           seed=100,
+                                                           seed=10,
                                                            target_size=(IMG_HEIGHT, IMG_WIDTH)
                                                            )
 
@@ -63,25 +63,27 @@ val_data_gen = validate_image_generator.flow_from_directory(batch_size=batch_siz
                                                             classes=['jakes', 'trufis'],
                                                             class_mode='binary',
                                                             target_size=(IMG_HEIGHT, IMG_WIDTH),
-                                                            seed=100,
+                                                            seed=10,
                                                             )
 sample_training_images, _ = next(train_data_gen)
 
 model = Sequential([
     Conv2D(16, 3, padding='same', activation='relu', input_shape=(IMG_HEIGHT, IMG_WIDTH, 3)),
     MaxPooling2D(),
-    Conv2D(32, 3, padding='same', activation='relu', kernel_regularizer=regularizers.l2(0.001)),
+    Conv2D(32, 3, padding='same', activation='relu'),
     MaxPooling2D(),
     # Conv2D(64, 3, padding='same', activation='relu'),
     # MaxPooling2D(),
     Flatten(),
-    Dense(512, activation='relu'),
-    Dense(1, activation='sigmoid')
+    Dense(256, activation='relu'),
+    Dense(1)
 ])
 
 model.compile(optimizer='adam',
               loss=tf.keras.losses.BinaryCrossentropy(from_logits=True),
               metrics=['accuracy'])
+
+# TODO: Make a function to predict images once the model is trained
 
 # Create directory if it doesn't exist
 if not os.path.isdir('./model'):
