@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 from math import ceil
 from time import time
 from tensorflow_core.python.keras.saving.save import load_model
+from keras import regularizers
+
 
 images_dir = './images/dogs'
 
@@ -32,18 +34,18 @@ print('total validation jakes images:', num_jakes)
 print('total validation trufis images:', num_trufis)
 print('total validation images:', total_validation)
 
-batch_size = 50
-epochs = 50  # Iterations
-IMG_HEIGHT = 500
-IMG_WIDTH = 500
+batch_size = 10
+epochs = 150  # Iterations
+IMG_HEIGHT = 250
+IMG_WIDTH = 250
 
 train_image_generator = ImageDataGenerator(
     rescale=1. / 255,
     rotation_range=45,
-    width_shift_range=.15,
-    height_shift_range=.15,
+    width_shift_range=.25,
+    height_shift_range=.25,
     horizontal_flip=True,
-    zoom_range=0.2,
+    zoom_range=0.1,
 )
 validate_image_generator = ImageDataGenerator(rescale=1. / 255)
 
@@ -68,27 +70,25 @@ sample_training_images, _ = next(train_data_gen)
 model = Sequential([
     Conv2D(16, 3, padding='same', activation='relu', input_shape=(IMG_HEIGHT, IMG_WIDTH, 3)),
     MaxPooling2D(),
-    Conv2D(32, 3, padding='same', activation='relu'),
+    Conv2D(32, 3, padding='same', activation='relu', kernel_regularizer=regularizers.l2(0.001)),
     MaxPooling2D(),
-    Conv2D(64, 3, padding='same', activation='relu'),
-    MaxPooling2D(),
+    # Conv2D(64, 3, padding='same', activation='relu'),
+    # MaxPooling2D(),
     Flatten(),
     Dense(512, activation='relu'),
-    Dense(1)
+    Dense(1, activation='sigmoid')
 ])
 
 model.compile(optimizer='adam',
               loss=tf.keras.losses.BinaryCrossentropy(from_logits=True),
               metrics=['accuracy'])
 
-# TODO: Make a function to predict images once the model is trained
-
 # Create directory if it doesn't exist
 if not os.path.isdir('./model'):
     os.mkdir('model')
 # Load model from file
-if os.path.isfile('./model/model.h5'):
-    model = load_model('./model/model.h5')
+# if os.path.isfile('./model/model.h5'):
+#     model = load_model('./model/model.h5')
 
 model.summary()
 t1 = time()
@@ -100,7 +100,7 @@ history = model.fit(
     validation_steps=ceil(total_validation / batch_size)
 )
 t2 = time()
-print('Finished network.\nTime taken: ', ((t2 - t1) / 60).__round__(0), ' minutes')
+print('Finished network.\nTime taken: ', ((t2 - t1) / 60).__round__(1), ' minutes')
 
 # Save model to file
 model.save('./model/model.h5')
@@ -132,9 +132,3 @@ plt.savefig("./result/%s_%s_%s" % (time.hour, time.minute, time.second))
 
 # Show figure
 plt.show()
-
-
-def predict(image):
-    # Load model
-    model = load_model('./model/model.h5')
-    return model.predict(image)
