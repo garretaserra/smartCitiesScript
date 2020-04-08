@@ -1,16 +1,15 @@
-"""
-Very simple HTTP server in python for logging requests
-Usage::
-    ./server.py [<port>]
-"""
-import io
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import logging
 import base64
 from io import BytesIO
 import matplotlib.pyplot as plt
 from PIL import Image
-from urllib.parse import urlparse, parse_qs
+import numpy as np
+from keras.saving.save import load_model
+import os
+
+file_to_model = os.path.join()
+model = load_model(file_to_model)
 
 class S(BaseHTTPRequestHandler):
     def _set_response(self):
@@ -40,7 +39,9 @@ class S(BaseHTTPRequestHandler):
         image = base64.b64decode(field_data)
         image = BytesIO(image)
         image = Image.open(image)
-        image.save('image.jpg')
+
+        image = np.expand_dims(axis=0)
+        result = model.predict_classes(image)
 
         plt.imshow(image)
         plt.show()
