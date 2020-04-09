@@ -11,16 +11,15 @@ for breed in subdirectories:
     i = 0
     for fileName in os.listdir(directory):
         if fileName.endswith(".jpg"):
-            print(fileName)
             im = Image.open(directory + fileName)
             width, height = im.size  # Get dimensions
             min_length = min(width, height)
 
             if target_size < min(im.size):
                 resize_factor = min(im.size) / target_size
-                new_size = tuple(int(resize_factor * x) for x in im.size)
+                new_size = tuple(int(x / resize_factor) for x in im.size)
                 resized_image = im.resize(new_size, Image.ANTIALIAS)
-
+                width, height = resized_image.size
                 left = (width - target_size) / 2
                 top = (height - target_size) / 2
                 right = (width + target_size) / 2
@@ -40,9 +39,10 @@ for breed in subdirectories:
                     bottom = height
                 resized_image = im.crop((left, top, right, bottom))
 
-            resized_image.save(directory + "image" + str(i).zfill(4) + ".jpg")
             # Delete full size images
-            os.remove(directory+fileName)
+            os.remove(directory + fileName)
+            resized_image.save(directory + breed + "_image" + str(i).zfill(4) + ".jpg")
+
             i += 1
         else:
             # Delete non jpg files
