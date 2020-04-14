@@ -8,7 +8,7 @@ import numpy as np
 from keras.saving.save import load_model
 import os
 
-file_to_model = os.path.join()
+file_to_model = './model.h5'
 model = load_model(file_to_model)
 
 class S(BaseHTTPRequestHandler):
