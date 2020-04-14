@@ -5,7 +5,7 @@ from io import BytesIO
 import matplotlib.pyplot as plt
 from PIL import Image
 import numpy as np
-from keras.saving.save import load_model
+from tensorflow_core.python.keras.saving.save import load_model
 import os
 
 file_to_model = './model.h5'
@@ -39,21 +39,25 @@ class S(BaseHTTPRequestHandler):
         image = base64.b64decode(field_data)
         image = BytesIO(image)
         image = Image.open(image)
+        print(image.size)
+        image = image.resize((400, 400))
+        print(image.size)
+        image = np.expand_dims(image, axis=0)
+        print(image.size)
 
-        image = np.expand_dims(axis=0)
-        result = model.predict_classes(image)
+        result = (model.predict_classes(image))[0][0]
+        print(result)
+        if result == 0:
+            result = 'jake'
+        elif result == 1:
+            result = 'trufa'
 
-        plt.imshow(image)
-        plt.show()
 
-        post_data = self.rfile.read(content_length) # <--- Gets the data itself
-        print('post data', type(post_data))
-
-        # logging.info("POST request,\nPath: %s\nHeaders:\n%s\n\nBody:\n%s\n",
-        #         str(self.path), str(self.headers), post_data.decode('utf-8'))
-
+        # post_data = self.rfile.read(content_length) # <--- Gets the data itself
+        # print('post data', type(post_data))
+        #
         self._set_response()
-        self.wfile.write("POST request for {}".format(self.path).encode('utf-8'))
+        self.wfile.write(result.format(self.path).encode('utf-8'))
 
 def run(server_class=HTTPServer, handler_class=S, port=8080):
     logging.basicConfig(level=logging.INFO)
