@@ -8,8 +8,8 @@ import os
 import matplotlib.pyplot as plt
 from math import ceil
 from time import time
-from tensorflow_core.python.keras.saving.save import load_model
-from keras import regularizers
+# from tensorflow_core.python.keras.saving.save import load_model
+# from keras import regularizers
 
 
 images_dir = './images/dogs'
@@ -34,10 +34,10 @@ print('total validation jakes images:', num_jakes)
 print('total validation trufis images:', num_trufis)
 print('total validation images:', total_validation)
 
-batch_size = 20
-epochs = 200  # Iterations
-IMG_HEIGHT = 300
-IMG_WIDTH = 300
+batch_size = 25
+epochs = 100  # Iterations
+IMG_HEIGHT = 400
+IMG_WIDTH = 400
 
 train_image_generator = ImageDataGenerator(
     rescale=1. / 255,
@@ -70,20 +70,21 @@ sample_training_images, _ = next(train_data_gen)
 model = Sequential([
     Conv2D(16, 3, padding='same', activation='relu', input_shape=(IMG_HEIGHT, IMG_WIDTH, 3)),
     MaxPooling2D(),
+    Dropout(0.1),
     Conv2D(32, 3, padding='same', activation='relu'),
     MaxPooling2D(),
-    # Conv2D(64, 3, padding='same', activation='relu'),
-    # MaxPooling2D(),
+    Dropout(0.1),
+    Conv2D(64, 3, padding='same', activation='relu'),
+    MaxPooling2D(),
+    Dropout(0.1),
     Flatten(),
-    Dense(256, activation='relu'),
+    Dense(128, activation='relu'),
     Dense(1)
 ])
 
 model.compile(optimizer='adam',
               loss=tf.keras.losses.BinaryCrossentropy(from_logits=True),
               metrics=['accuracy'])
-
-# TODO: Make a function to predict images once the model is trained
 
 # Create directory if it doesn't exist
 if not os.path.isdir('./model'):
@@ -130,7 +131,7 @@ plt.title('Training and Validation Loss')
 
 # Save figure
 time = datetime.now()
-plt.savefig("./result/%s-%s_%s-%s-%s" % (time.day,time.month,time.hour, time.minute, time.second))
+plt.savefig("./result/%s-%s_%s-%s-%s" % (time.day, time.month, time.hour, time.minute, time.second))
 
 # Show figure
 plt.show()
