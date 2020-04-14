@@ -2,11 +2,9 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import logging
 import base64
 from io import BytesIO
-import matplotlib.pyplot as plt
 from PIL import Image
 import numpy as np
 from tensorflow_core.python.keras.saving.save import load_model
-import os
 
 file_to_model = './model.h5'
 model = load_model(file_to_model)
@@ -39,11 +37,10 @@ class S(BaseHTTPRequestHandler):
         image = base64.b64decode(field_data)
         image = BytesIO(image)
         image = Image.open(image)
-        print(image.size)
-        image = image.resize((400, 400))
-        print(image.size)
+        shape = model.get_layer(index=0).input_shape[1:3]
+        image = image.resize(shape)
+
         image = np.expand_dims(image, axis=0)
-        print(image.size)
 
         result = (model.predict_classes(image))[0][0]
         print(result)
