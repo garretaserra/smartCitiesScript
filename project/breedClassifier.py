@@ -130,7 +130,7 @@ plt.title('Training and Validation Loss')
 
 # Save figure
 time = datetime.now()
-plt.savefig("./result/%s_%s_%s" % (time.hour, time.minute, time.second))
+plt.savefig("./result/%s-%s_%s-%s-%s" % (time.day,time.month,time.hour, time.minute, time.second))
 
 # Show figure
 plt.show()
