@@ -8,8 +8,10 @@ import os
 import matplotlib.pyplot as plt
 from math import ceil
 from time import time
+from tensorflow_core.python.keras.saving.save import load_model
 # from tensorflow_core.python.keras.saving.save import load_model
 # from keras import regularizers
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
 
 images_dir = './images/dogs'
@@ -35,7 +37,7 @@ print('total validation trufis images:', num_trufis)
 print('total validation images:', total_validation)
 
 batch_size = 25
-epochs = 100  # Iterations
+epochs = 20  # Iterations
 IMG_HEIGHT = 400
 IMG_WIDTH = 400
 
@@ -67,31 +69,34 @@ val_data_gen = validate_image_generator.flow_from_directory(batch_size=batch_siz
                                                             )
 sample_training_images, _ = next(train_data_gen)
 
-model = Sequential([
-    Conv2D(16, 3, padding='same', activation='relu', input_shape=(IMG_HEIGHT, IMG_WIDTH, 3)),
-    MaxPooling2D(),
-    Dropout(0.1),
-    Conv2D(32, 3, padding='same', activation='relu'),
-    MaxPooling2D(),
-    Dropout(0.1),
-    Conv2D(64, 3, padding='same', activation='relu'),
-    MaxPooling2D(),
-    Dropout(0.1),
-    Flatten(),
-    Dense(128, activation='relu'),
-    Dense(1)
-])
+# Create directory if it doesn't exist
+if not os.path.isdir('./model'):
+    os.mkdir('model')
+
+# Load model from file
+LOAD_MODEL = False
+if LOAD_MODEL:
+    if os.path.isfile('./model/model.h5'):
+        model = load_model('./model/model.h5')
+else:
+    model = Sequential([
+        Conv2D(16, 3, padding='same', activation='relu', input_shape=(IMG_HEIGHT, IMG_WIDTH, 3)),
+        MaxPooling2D(),
+        Dropout(0.1),
+        Conv2D(32, 3, padding='same', activation='relu'),
+        MaxPooling2D(),
+        Dropout(0.1),
+        Conv2D(64, 3, padding='same', activation='relu'),
+        MaxPooling2D(),
+        Dropout(0.1),
+        Flatten(),
+        Dense(128, activation='relu'),
+        Dense(1)
+    ])
 
 model.compile(optimizer='adam',
               loss=tf.keras.losses.BinaryCrossentropy(from_logits=True),
               metrics=['accuracy'])
-
-# Create directory if it doesn't exist
-if not os.path.isdir('./model'):
-    os.mkdir('model')
-# Load model from file
-# if os.path.isfile('./model/model.h5'):
-#     model = load_model('./model/model.h5')
 
 model.summary()
 t1 = time()
