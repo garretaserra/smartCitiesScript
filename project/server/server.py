@@ -28,12 +28,16 @@ class S(BaseHTTPRequestHandler):
         return
 
     def do_POST(self):
+        print(self.path)
         content_length = int(self.headers['Content-Length']) # <--- Gets the size of data
         print('content legth', content_length)
         field_data = self.rfile.read(content_length)
-        # field_data = field_data.decode("utf-8")
-        field_data = field_data[field_data.find(b'/9'):]
-        print(field_data)
+        if self.path == '/mobile':
+            field_data = field_data.decode("utf-8")
+        if self.path == '/web':
+            field_data = field_data[field_data.find(b'/9'):]
+        # print(field_data)
+
         image = base64.b64decode(field_data)
         image = BytesIO(image)
         image = Image.open(image)

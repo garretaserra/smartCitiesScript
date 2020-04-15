@@ -11,7 +11,7 @@
         const fReader = new FileReader();
         fReader.onloadend = function() {
             const result = fReader.result;
-            fetch('/', {method: 'POST', body: result})
+            fetch('/web', {method: 'POST', body: result})
             .then(response => {
                 response.text().then(text=>{
                     document.getElementById('response').innerText = text;
