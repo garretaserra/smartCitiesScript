@@ -1,7 +1,8 @@
 <html>
 <body>
+<h1>Classificador de Gossos</h1>
 <input id="fileUpload" type="file" />
-<h1>hola</h1>
+<label id="response"></label>
 </body>
 </html>
 <script>
@@ -10,10 +11,12 @@
         const fReader = new FileReader();
         fReader.onloadend = function() {
             const result = fReader.result;
-            console.log(result);
-            fetch('/', {method: 'POST', body: result})
-            .then(response => response.json())
-            .then(data => {console.log(data.path)})
+            fetch('/web', {method: 'POST', body: result})
+            .then(response => {
+                response.text().then(text=>{
+                    document.getElementById('response').innerText = text;
+                })
+            })
             .catch(error => {console.error(error)})
         };
         fReader.readAsDataURL(files[0]);
